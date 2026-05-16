@@ -1,4 +1,5 @@
 use sea_orm_migration::{prelude::*, schema::*};
+use crate::m20260516_163507_create_users::Account;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -20,6 +21,14 @@ impl MigrationTrait for Migration {
                     .col(string(Package::Description).not_null())
                     .col(date_time(Package::CreatedAt).not_null())
                     .col(date_time(Package::UpdatedAt).not_null())
+                    .col(integer(Package::CreatedBy).not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk-package-created_by-account-id")
+                            .from(Package::Table, Package::CreatedBy)
+                            .to(Account::Table, Account::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
                     .to_owned(),
             )
             .await
@@ -44,4 +53,5 @@ enum Package {
     Description,
     CreatedAt,
     UpdatedAt,
+    CreatedBy,
 }

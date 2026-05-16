@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["server", "migration"]
+members = ["server", "migration", "toolkit", "common"]
 default-members = ["server"]
 
 [workspace.package]
@@ -91,3 +91,11 @@ url = "^2.5"
 axum_typed_multipart = "^0.16"
 typeshare = "^1.0"
 serde_with = "^3.18"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+missing_panics_doc = "allow"
+missing_errors_doc = "allow"
+return_self_not_must_use = "allow"
+cast_possible_truncation = "allow"

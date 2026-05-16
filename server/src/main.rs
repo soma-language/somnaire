@@ -1,9 +1,8 @@
-#![warn(clippy::pedantic)]
-#![allow(clippy::missing_panics_doc)]
-
 use dotenvy::dotenv;
 use tracing_subscriber::EnvFilter;
 
+pub mod auth;
+pub mod schema;
 pub mod web;
 
 #[tokio::main]

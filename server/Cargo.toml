@@ -1,9 +1,15 @@
 [package]
 name = "server"
+publish = false
+version.workspace = true
 edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [dependencies]
 argon2.workspace = true
+aws-config.workspace = true
 aws-sdk-s3.workspace = true
 axum.workspace = true
 axum-extra.workspace = true
@@ -35,3 +41,6 @@ tower_governor.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 url.workspace = true
+
+[lints.clippy]
+wildcard_imports = "allow"

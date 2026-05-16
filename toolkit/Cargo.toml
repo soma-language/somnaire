@@ -1,5 +1,5 @@
 [package]
-name = "migration"
+name = "somnaire-toolkit"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -7,12 +7,10 @@ repository.workspace = true
 authors.workspace = true
 
 [lib]
-name = "migration"
+name = "somnaire_toolkit"
 path = "src/lib.rs"
 
 [dependencies]
-sea-orm-migration.workspace = true
-tokio.workspace = true
-
-[lints]
-workspace = true
+reqwest.workspace = true
+reqwest-tracing.workspace = true
+reqwest-middleware.workspace = true
