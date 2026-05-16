@@ -1,0 +1,93 @@
+[workspace]
+resolver = "2"
+members = ["server", "migration"]
+default-members = ["server"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/SrGaabriel/leander"
+authors = ["Gabriel"]
+
+[workspace.dependencies]
+axum = { version = "^0.8", features = ["macros", "ws", "multipart"] }
+axum-extra = { version = "^0.12", features = ["typed-header"] }
+chrono = "^0.4"
+dotenvy = "^0.15"
+governor = "^0.10"
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = "^1.0"
+tokio = { version = "^1.49", features = ["full"] }
+tower = { version = "^0.5", features = ["util"]}
+tower-http = {
+    version = "^0.6",
+    features = [
+        "trace",
+        "add-extension",
+        "cors",
+        "fs",
+        "auth",
+        "set-header",
+        "limit"
+    ]
+}
+tower_governor = { version = "=0.8.0", features = ["axum", "tracing"] }
+tracing = "^0.1"
+tracing-subscriber = { version = "^0.3", features = ["env-filter"] }
+
+jsonwebtoken = "^9"
+argon2 = "^0.5"
+garde = { version = "^0.22", features = ["full"] }
+
+sea-orm = { version = "=2.0.0-rc.36", features = [
+    "sqlx-postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "uuid",
+    "chrono",
+    "postgres-array"
+]  }
+sea-query = { version = "=1.0.0-rc.31", features = ["postgres-array"] }
+sea-orm-migration = { version = "=2.0.0-rc.30", features = ["sqlx-postgres","runtime-tokio-rustls"] }
+
+futures = "^0.3"
+bytes = "^1.11"
+thiserror = "^2.0"
+tokio-util = "^0.7"
+reqwest = {
+    version = "0.13",
+    default-features = false,
+    features = [
+        "json",
+        "multipart",
+        "cookies",
+        "http2",
+        "rustls"
+    ]
+}
+aws-config = { version = "^1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = { version = "^1", features = ["behavior-version-latest"] }
+infer = "^0.19"
+reqwest-tracing = { version = "^0.6", features = ["tracing-opentelemetry_0_31_pkg"] }
+reqwest-middleware = { version = "^0.5", features = ["json"] }
+psl = "^2.1"
+lettre = {
+    version = "^0.11",
+    default-features = false,
+    features = [
+        "builder",
+        "pool",
+        "smtp-transport",
+        "tokio1",
+        "tokio1-rustls",
+        "ring",
+        "webpki-roots"
+    ]
+}
+lazy_static = "^1.5"
+async-trait = "^0.1"
+url = "^2.5"
+axum_typed_multipart = "^0.16"
+typeshare = "^1.0"
+serde_with = "^3.18"
