@@ -1,5 +1,10 @@
-# Created by https://www.toptal.com/developers/gitignore/api/rust,svelte,dotenv,windows,linux,macos,node,deno
-# Edit at https://www.toptal.com/developers/gitignore?templates=rust,svelte,dotenv,windows,linux,macos,node,deno
+# Created by https://www.toptal.com/developers/gitignore/api/deno,node,rust,linux,macos,dotenv,windows,astro,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=deno,node,rust,linux,macos,dotenv,windows,astro,visualstudiocode
+
+### Astro ###
+# Gitignore template for Astro projects
+# Ignore content collection generated files
+.astro
 
 ### Deno ###
 /.idea/
@@ -217,12 +222,24 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-### Svelte ###
-# gitignore template for the SvelteKit, frontend web component framework
-# website: https://kit.svelte.dev/
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
 
-.svelte-kit/
-package
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -250,4 +267,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/rust,svelte,dotenv,windows,linux,macos,node,deno
+# End of https://www.toptal.com/developers/gitignore/api/deno,node,rust,linux,macos,dotenv,windows,astro,visualstudiocode

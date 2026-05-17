@@ -1,0 +1,67 @@
+name: somnaire
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-somnaire}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-somnaire}
+      POSTGRES_DB: ${POSTGRES_DB:-somnaire}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-somnaire} -d ${POSTGRES_DB:-somnaire}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migration:
+    build:
+      context: .
+      dockerfile: migration/Dockerfile
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-somnaire}:${POSTGRES_PASSWORD:-somnaire}@postgres:5432/${POSTGRES_DB:-somnaire}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      API_ADDRESS: 0.0.0.0:8080
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      DATABASE_URL: postgres://${POSTGRES_USER:-somnaire}:${POSTGRES_PASSWORD:-somnaire}@postgres:5432/${POSTGRES_DB:-somnaire}
+      RUST_LOG: ${RUST_LOG:-info}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+      args:
+        API_URL: ${PUBLIC_API_URL:-http://localhost:8080}
+    ports:
+      - "${WEBSITE_PORT:-3000}:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

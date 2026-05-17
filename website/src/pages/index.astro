@@ -1,0 +1,228 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const apiUrl = import.meta.env.API_URL;
+if (!apiUrl) {
+  throw new Error("API_URL is not set");
+}
+---
+
+<Layout>
+  <section class="search-hero">
+    <div class="container">
+      <h1>The Soma package registry</h1>
+      <p class="sub" data-sub>
+        Search packages in somnarium, the place of dreams
+      </p>
+
+      <form class="search-box" action="/search" method="get" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="20" y1="20" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          placeholder="search packages, keywords or authors"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search packages"
+        />
+        <kbd>/</kbd>
+      </form>
+
+      <div class="stats">
+        <div><strong data-stat="packages" data-loading>◌</strong> packages</div>
+        <div><strong data-stat="versions" data-loading>◌</strong> versions</div>
+        <div><strong data-stat="downloads" data-loading>◌</strong> downloads</div>
+        <div><strong data-stat="publishers" data-loading>◌</strong> publishers</div>
+      </div>
+    </div>
+    <script is:inline define:vars={{ apiUrl }}>
+      window.__SOMNAIRE_API__ = apiUrl;
+    </script>
+  </section>
+
+  <section class="registry">
+    <div class="container">
+      <div class="registry-grid">
+        <div>
+          <div class="col-head">
+            <h2>Recently published</h2>
+            <a href="/packages?sort=recent">view all →</a>
+          </div>
+          <div class="package-list" data-list="recent">
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:40%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:55%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:48%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:60%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:45%"></div></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="col-head">
+            <h2>Most downloaded</h2>
+            <a href="/packages?sort=downloads">view all →</a>
+          </div>
+          <div class="package-list" data-list="popular">
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:50%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:42%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:58%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:46%"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar" style="width:52%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    type Pkg = {
+      name: string;
+      desc: string;
+      version: string;
+      updated: string;
+      downloads: string;
+      license: string;
+    };
+
+    type Stats = {
+      packages: number;
+      versions: number;
+      downloads: number;
+      publishers: number;
+    };
+
+    const fmt = new Intl.NumberFormat("en-US");
+    const compact = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
+
+    function escape(s: string) {
+      return s.replace(/[&<>"']/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!),
+      );
+    }
+
+    function renderRow(p: Pkg): string {
+      const href = `/packages/${p.name}`;
+      return `
+        <a class="package-row" href="${escape(href)}">
+          <div class="top">
+            <div class="name">${escape(p.name)}</div>
+            <div class="version">v${escape(p.version)}</div>
+          </div>
+          <div class="desc">${escape(p.desc)}</div>
+          <div class="meta">
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escape(p.updated)}</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>${escape(p.downloads)}</span>
+            <span>${escape(p.license)}</span>
+          </div>
+        </a>
+      `;
+    }
+
+    const emptyCopy: Record<string, { title: string; hint: string }> = {
+      recent: {
+        title: "No packages published yet",
+        hint: "Once the first package is published, it will appear here.",
+      },
+      popular: {
+        title: "Nothing trending yet",
+        hint: "Download counts appear here once packages start getting installed.",
+      },
+    };
+
+    function renderEmpty(key: string): string {
+      const copy = emptyCopy[key] ?? {
+        title: "Nothing here yet",
+        hint: "Check back soon.",
+      };
+      return `
+        <div class="empty-state">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          <div class="title">${copy.title}</div>
+          <p class="hint">${copy.hint}</p>
+        </div>
+      `;
+    }
+
+    function renderError(): string {
+      return `<div class="error-state">failed to load, try refreshing</div>`;
+    }
+
+    function fillList(key: string, pkgs: Pkg[]) {
+      const el = document.querySelector<HTMLElement>(`[data-list="${key}"]`);
+      if (!el) return;
+      if (pkgs.length === 0) {
+        el.innerHTML = renderEmpty(key);
+        el.classList.add("is-empty");
+        return;
+      }
+      el.innerHTML = pkgs.map(renderRow).join("");
+    }
+
+    function fillStats(s: Stats) {
+      const formatted: Record<keyof Stats, string> = {
+        packages: fmt.format(s.packages),
+        versions: fmt.format(s.versions),
+        downloads: compact.format(s.downloads),
+        publishers: fmt.format(s.publishers),
+      };
+      document.querySelectorAll<HTMLElement>("[data-stat]").forEach((el) => {
+        const key = el.dataset.stat as keyof Stats;
+        if (!(key in formatted)) return;
+        el.textContent = formatted[key];
+        delete el.dataset.loading;
+      });
+
+      const sub = document.querySelector<HTMLElement>("[data-sub]");
+      if (sub && s.packages === 0) {
+        sub.textContent = "No packages have been published yet.";
+      }
+    }
+
+    const API = (window as unknown as { __SOMNAIRE_API__: string }).__SOMNAIRE_API__;
+
+    async function load() {
+      try {
+        const [stats, recent, popular] = await Promise.all([
+          fetch(`${API}/api/stats`).then((r) => r.json() as Promise<Stats>),
+          fetch(`${API}/api/packages/recent`).then((r) => r.json() as Promise<Pkg[]>),
+          fetch(`${API}/api/packages/popular`).then((r) => r.json() as Promise<Pkg[]>),
+        ]);
+        fillStats(stats);
+        fillList("recent", recent);
+        fillList("popular", popular);
+      } catch (err) {
+        console.error("failed to load registry data", err);
+        document.querySelectorAll<HTMLElement>("[data-list]").forEach((el) => {
+          el.innerHTML = renderError();
+        });
+        document.querySelectorAll<HTMLElement>("[data-stat]").forEach((el) => {
+          el.textContent = "◌";
+          delete el.dataset.loading;
+        });
+      }
+    }
+    load();
+
+    const input = document.querySelector<HTMLInputElement>(".search-box input");
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "/" &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
+        e.preventDefault();
+        input?.focus();
+      }
+    });
+  </script>
+</Layout>
