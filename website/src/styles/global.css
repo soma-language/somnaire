@@ -35,17 +35,24 @@ body {
 
 body {
   min-height: 100vh;
+  background-color: var(--void);
   background-image:
     radial-gradient(
-      1200px 600px at 80% -10%,
+      900px 500px at 12% 8%,
+      rgba(167, 139, 250, 0.09),
+      transparent 60%
+    ),
+    radial-gradient(
+      1100px 600px at 88% -4%,
       rgba(91, 255, 200, 0.06),
       transparent 60%
     ),
     radial-gradient(
-      900px 500px at 10% 10%,
-      rgba(167, 139, 250, 0.05),
+      800px 500px at 65% 90%,
+      rgba(249, 115, 22, 0.04),
       transparent 60%
     );
+  background-attachment: fixed;
 }
 
 a {
@@ -142,11 +149,13 @@ pre,
 }
 
 .search-hero h1 {
-  font-size: clamp(22px, 2.4vw, 28px);
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-family: "Fraunces", "Iowan Old Style", "Charter", Georgia, serif;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--fg);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-variation-settings: "opsz" 96;
 }
 
 .search-hero .sub {
@@ -167,8 +176,10 @@ pre,
 }
 
 .search-box:focus-within {
-  border-color: var(--gamma);
-  box-shadow: 0 0 0 3px rgba(91, 255, 200, 0.12);
+  border-color: rgba(167, 139, 250, 0.5);
+  box-shadow:
+    0 0 0 4px rgba(167, 139, 250, 0.1),
+    0 0 32px rgba(167, 139, 250, 0.18);
 }
 
 .search-box svg {
@@ -617,9 +628,10 @@ pre,
   display: flex;
   flex-direction: column;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
-  background: var(--void-2);
+  background: rgba(11, 13, 18, 0.6);
+  backdrop-filter: blur(8px);
 }
 
 .package-row {
