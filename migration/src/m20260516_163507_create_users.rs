@@ -9,13 +9,13 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Account::Table)
+                    .table(Accounts::Table)
                     .if_not_exists()
-                    .col(pk_auto(Account::Id))
-                    .col(string(Account::Username).not_null().unique_key())
-                    .col(string(Account::Name).not_null())
-                    .col(string(Account::Email).not_null())
-                    .col(string(Account::PasswordHash).not_null())
+                    .col(pk_auto(Accounts::Id))
+                    .col(string(Accounts::Username).not_null().unique_key())
+                    .col(string(Accounts::Name).not_null())
+                    .col(string(Accounts::Email).not_null())
+                    .col(string(Accounts::PasswordHash).not_null())
                     .to_owned(),
             )
             .await
@@ -23,13 +23,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Account::Table).to_owned())
+            .drop_table(Table::drop().table(Accounts::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum Account {
+pub enum Accounts {
     Table,
     Id,
     Username,

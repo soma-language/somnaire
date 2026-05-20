@@ -1,6 +1,6 @@
 use std::fmt;
 
-use argon2::{Argon2, PasswordVerifier, PasswordHash};
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use thiserror::Error;
 
@@ -25,7 +25,9 @@ pub async fn authenticate(
     })?;
 
     let is_password_valid = ARGON2.with(|argon2| {
-        argon2.verify_password(password.as_bytes(), &password_hash).is_ok()
+        argon2
+            .verify_password(password.as_bytes(), &password_hash)
+            .is_ok()
     });
     if !is_password_valid {
         return Err(AuthError::IncorrectPassword);

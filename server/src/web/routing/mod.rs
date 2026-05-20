@@ -1,8 +1,12 @@
+pub mod stats;
+
 use axum::Router;
 use axum::http::Method;
 use axum::http::header::{AUTHORIZATION, CONTENT_TYPE, HeaderName, HeaderValue};
+use axum::routing::get;
 use governor::DefaultKeyedRateLimiter;
 use governor::middleware::StateInformationMiddleware;
+use sea_orm::DatabaseConnection;
 use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Duration;
@@ -14,7 +18,7 @@ use tower_http::limit::RequestBodyLimitLayer;
 use tower_http::set_header::SetResponseHeaderLayer;
 use tower_http::trace::{DefaultMakeSpan, TraceLayer};
 
-pub fn router() -> Router {
+pub fn router(db: DatabaseConnection) -> Router {
     let cors = build_cors_layer();
 
     let login_governor = governor_cfg(4, 3);
@@ -33,11 +37,7 @@ pub fn router() -> Router {
     );
 
     Router::new()
-        .nest(
-            "/api",
-            Router::new()
-                
-        )
+        .nest("/api", Router::new().route("/stats", get(stats::handler)))
         .layer(cors)
         .layer(RequestBodyLimitLayer::new(10 * 1024 * 1024))
         .layer(security_headers())
@@ -47,6 +47,7 @@ pub fn router() -> Router {
                     .make_span_with(DefaultMakeSpan::default().include_headers(true)),
             ),
         )
+        .with_state(db)
 }
 
 fn spawn_limiter_cleanup(

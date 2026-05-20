@@ -11,11 +11,11 @@ pub struct Model {
     pub license: String,
     pub repository: String,
     pub description: String,
+    pub downloads: i64,
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub created_by: i32,
 }
-
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {

@@ -1,5 +1,5 @@
+use crate::m20260516_163507_create_users::Accounts;
 use sea_orm_migration::{prelude::*, schema::*};
-use crate::m20260516_163507_create_users::Account;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -10,23 +10,24 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Package::Table)
+                    .table(Packages::Table)
                     .if_not_exists()
-                    .col(pk_auto(Package::Id))
-                    .col(string(Package::Name).not_null())
-                    .col(string(Package::Version).not_null())
-                    .col(string(Package::Author).not_null())
-                    .col(string(Package::License).not_null())
-                    .col(string(Package::Repository).not_null())
-                    .col(string(Package::Description).not_null())
-                    .col(date_time(Package::CreatedAt).not_null())
-                    .col(date_time(Package::UpdatedAt).not_null())
-                    .col(integer(Package::CreatedBy).not_null())
+                    .col(pk_auto(Packages::Id))
+                    .col(string(Packages::Name).not_null())
+                    .col(string(Packages::Version).not_null())
+                    .col(string(Packages::Author).not_null())
+                    .col(string(Packages::License).not_null())
+                    .col(string(Packages::Repository).not_null())
+                    .col(string(Packages::Description).not_null())
+                    .col(integer(Packages::Downloads).not_null().default(0))
+                    .col(date_time(Packages::CreatedAt).not_null())
+                    .col(date_time(Packages::UpdatedAt).not_null())
+                    .col(integer(Packages::CreatedBy).not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-package-created_by-account-id")
-                            .from(Package::Table, Package::CreatedBy)
-                            .to(Account::Table, Account::Id)
+                            .from(Packages::Table, Packages::CreatedBy)
+                            .to(Accounts::Table, Accounts::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -36,13 +37,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Package::Table).to_owned())
+            .drop_table(Table::drop().table(Packages::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Package {
+enum Packages {
     Table,
     Id,
     Name,
@@ -51,6 +52,7 @@ enum Package {
     License,
     Repository,
     Description,
+    Downloads,
     CreatedAt,
     UpdatedAt,
     CreatedBy,

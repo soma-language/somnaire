@@ -91,6 +91,7 @@ url = "^2.5"
 axum_typed_multipart = "^0.16"
 typeshare = "^1.0"
 serde_with = "^3.18"
+oxymorph = "0.1"
 
 [workspace.lints.clippy]
 pedantic = { level = "warn", priority = -1 }

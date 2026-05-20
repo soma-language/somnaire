@@ -11,7 +11,6 @@ pub struct Model {
     pub password_hash: String,
 }
 
-
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(has_many = "super::packages::Entity")]
